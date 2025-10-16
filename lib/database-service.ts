@@ -102,33 +102,46 @@ export async function getTeamsByOrganisation(organisationId: string): Promise<Te
 // Fetch all organisations
 export async function getAllOrganisations(): Promise<Organisation[]> {
   try {
+    console.log('Fetching organisations from database...');
+    
     const { data: organisations, error } = await supabase
       .from('organisations')
-      .select(`
-        id,
-        name,
-        subdomain,
-        status,
-        plan,
-        users (
-          id,
-          role
-        )
-      `);
+      .select('*');
+
+    console.log('Organisations query result:', { organisations, error });
 
     if (error) {
       console.error('Error fetching organisations:', error);
       return [];
     }
 
-    return organisations.map(org => ({
-      id: org.id,
-      name: org.name,
-      subdomain: org.subdomain,
-      status: org.status,
-      plan: org.plan,
-      adminIds: org.users?.filter((user: { role: string }) => user.role === 'org_admin').map((user: { id: string }) => user.id) || [],
-    }));
+    if (!organisations || organisations.length === 0) {
+      console.log('No organisations found in database');
+      return [];
+    }
+
+    // Get admin users for each organisation
+    const orgsWithAdmins = await Promise.all(
+      organisations.map(async (org) => {
+        const { data: users } = await supabase
+          .from('users')
+          .select('id, role')
+          .eq('organisation_id', org.id)
+          .eq('role', 'org_admin');
+
+        return {
+          id: org.id,
+          name: org.name,
+          subdomain: org.subdomain,
+          status: org.status,
+          plan: org.plan,
+          adminIds: users?.map(user => user.id) || [],
+        };
+      })
+    );
+
+    console.log('Organisations with admins:', orgsWithAdmins);
+    return orgsWithAdmins;
   } catch (error) {
     console.error('Error in getAllOrganisations:', error);
     return [];
