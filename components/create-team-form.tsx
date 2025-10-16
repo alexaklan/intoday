@@ -68,8 +68,23 @@ export function CreateTeamForm({
   };
 
   const handleSave = () => {
+    console.log('CreateTeamForm handleSave called', {
+      teamName: teamName.trim(),
+      selectedUserIds,
+      errors,
+      errorsLength: errors.length,
+      teamNameTrimmed: teamName.trim()
+    });
+    
     if (errors.length === 0 && teamName.trim()) {
+      console.log('Calling onSave with:', teamName.trim(), selectedUserIds);
       onSave(teamName.trim(), selectedUserIds);
+    } else {
+      console.log('Save blocked due to validation:', {
+        hasErrors: errors.length > 0,
+        hasTeamName: !!teamName.trim(),
+        errors
+      });
     }
   };
 

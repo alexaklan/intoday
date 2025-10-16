@@ -84,6 +84,8 @@ export default function AdminPage() {
   }, [currentUser]);
 
   const handleCreateTeam = async (name: string, userIds: string[]) => {
+    console.log('Admin handleCreateTeam called with:', { name, userIds });
+    
     try {
       const response = await fetch('/api/teams', {
         method: 'POST',
@@ -93,16 +95,21 @@ export default function AdminPage() {
         body: JSON.stringify({ name, userIds }),
       });
 
+      console.log('Create team response:', response.status, response.ok);
+
       if (response.ok) {
+        console.log('Team created successfully, refreshing data...');
         // Refresh teams data
         const teamsResponse = await fetch('/api/teams');
         if (teamsResponse.ok) {
           const teamsData = await teamsResponse.json();
+          console.log('Refreshed teams data:', teamsData);
           setTeams(teamsData.teams || []);
         }
         setIsCreatingTeam(false);
       } else {
-        console.error('Failed to create team');
+        const errorText = await response.text();
+        console.error('Failed to create team:', response.status, errorText);
       }
     } catch (error) {
       console.error('Error creating team:', error);
