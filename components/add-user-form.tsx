@@ -20,7 +20,7 @@ interface AddUserFormProps {
     lastName: string;
     email: string;
     selectedTeamIds: string[];
-  }) => void;
+  }) => Promise<void>;
   users: User[];
   teams: Team[];
   organisationId: string;
@@ -70,13 +70,42 @@ export function AddUserForm({
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    console.log('AddUserForm handleSave called', {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim(),
+      selectedTeamIds,
+      errors,
+      errorsLength: errors.length
+    });
+    
     if (errors.length === 0 && firstName.trim() && lastName.trim() && email.trim()) {
-      onSave({
+      console.log('Calling onSave with:', {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         email: email.trim(),
         selectedTeamIds
+      });
+      
+      try {
+        await onSave({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          selectedTeamIds
+        });
+        console.log('onSave completed successfully');
+      } catch (error) {
+        console.error('onSave failed:', error);
+      }
+    } else {
+      console.log('Save blocked due to validation:', {
+        hasErrors: errors.length > 0,
+        hasFirstName: !!firstName.trim(),
+        hasLastName: !!lastName.trim(),
+        hasEmail: !!email.trim(),
+        errors
       });
     }
   };
