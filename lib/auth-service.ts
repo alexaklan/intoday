@@ -25,7 +25,7 @@ export async function login(email: string, password: string): Promise<boolean> {
   }
 
   // Set authentication cookie
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   cookieStore.set('auth-user-id', credential.userId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -37,7 +37,7 @@ export async function login(email: string, password: string): Promise<boolean> {
 }
 
 export async function getCurrentUser(): Promise<AuthUser | null> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const userId = cookieStore.get('auth-user-id')?.value;
   
   if (!userId) {
@@ -77,7 +77,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 }
 
 export async function logout(): Promise<void> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   cookieStore.delete('auth-user-id');
   redirect('/login');
 }

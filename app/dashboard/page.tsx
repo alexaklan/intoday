@@ -211,11 +211,11 @@ export default function Dashboard() {
           </div>
           
           {/* Team Selector - Clean placement */}
-          {user.teamIds.length > 1 && (
+          {user && user.teamIds.length > 1 && (
             <div className="mb-6">
               <h3 className="font-medium text-sm text-muted-foreground mb-3">Select Team</h3>
               <TeamSelector
-                teams={teams.filter(t => user.teamIds.includes(t.id))}
+                teams={teams.filter(t => user && user.teamIds.includes(t.id))}
                 selectedTeamId={selectedTeamId}
                 onTeamChange={setSelectedTeamId}
               />

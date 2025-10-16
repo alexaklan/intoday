@@ -298,7 +298,7 @@ export default function AdminPage() {
                                 {user.role === 'org_admin' && (
                                   <Badge variant="outline" className="text-xs">Admin</Badge>
                                 )}
-                                {user.id === currentUser.id && (
+                                {currentUser && user.id === currentUser.id && (
                                   <Badge variant="secondary" className="text-xs">You</Badge>
                                 )}
                               </div>
@@ -396,7 +396,7 @@ export default function AdminPage() {
                 <Card className="p-6">
                   <div className="mb-4">
                     <h3 className="font-semibold text-lg">
-                      {users.find(u => u.id === selectedUserId)?.name}'s Schedule
+                      {users.find(u => u.id === selectedUserId)?.name}&apos;s Schedule
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       {users.find(u => u.id === selectedUserId)?.email}
@@ -553,7 +553,7 @@ export default function AdminPage() {
                               {user.role === 'org_admin' && (
                                 <Badge variant="outline" className="text-xs">Admin</Badge>
                               )}
-                              {user.id === currentUser.id && (
+                              {currentUser && user.id === currentUser.id && (
                                 <Badge variant="secondary" className="text-xs">You</Badge>
                               )}
                             </div>

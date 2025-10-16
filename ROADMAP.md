@@ -203,11 +203,11 @@ This roadmap is a living document. Features can be added, removed, or reprioriti
 
 **Current Status:** Frontend application is feature-complete with authentication, user management, organisation management, and super admin functionality. Ready for backend development and data persistence.
 
-**Next Priority:** Deploy to Railway for production hosting and backend development
+**Next Priority:** Deploy to Netlify for production hosting and backend development
 
 ---
 
-## 🚀 **Deployment Guide: Git + Railway Setup**
+## 🚀 **Deployment Guide: Git + Netlify Setup**
 
 ### **Step 1: Git Setup & GitHub Repository**
 
@@ -238,49 +238,52 @@ git commit -m "Initial commit: Complete intoday frontend with authentication and
 #### **1.3 Connect Local Repository to GitHub**
 ```bash
 # Add GitHub remote (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/intoday.git
+git remote add origin https://github.com/alexaklan/intoday.git
 
 # Push to GitHub
 git branch -M main
 git push -u origin main
 ```
 
-### **Step 2: Railway Account Setup**
+### **Step 2: Netlify Account Setup**
 
-#### **2.1 Create Railway Account**
-1. Go to [railway.app](https://railway.app)
-2. Click **"Login"** → **"Login with GitHub"**
-3. Authorize Railway to access your GitHub account
+#### **2.1 Create Netlify Account**
+1. Go to [netlify.com](https://netlify.com)
+2. Click **"Sign up"** → **"Sign up with GitHub"**
+3. Authorize Netlify to access your GitHub account
 4. Complete account setup
 
-#### **2.2 Railway Dashboard Overview**
-- **Projects**: Your applications
-- **Databases**: PostgreSQL instances
+#### **2.2 Netlify Dashboard Overview**
+- **Sites**: Your deployed applications
+- **Functions**: Serverless functions
 - **Domains**: Custom domain management
+- **Forms**: Form handling (if needed)
 - **Settings**: Environment variables and config
 
-### **Step 3: Deploy Frontend to Railway**
+### **Step 3: Deploy Frontend to Netlify**
 
-#### **3.1 Create New Project**
-1. In Railway dashboard, click **"New Project"**
-2. Select **"Deploy from GitHub repo"**
-3. Choose your `intoday` repository
-4. Railway will auto-detect it's a Next.js project
+#### **3.1 Create New Site**
+1. In Netlify dashboard, click **"Add new site"**
+2. Select **"Import an existing project"**
+3. Choose **"Deploy with GitHub"**
+4. Select your `intoday` repository
 
-#### **3.2 Configure Deployment**
-Railway will automatically:
-- ✅ Detect Next.js framework
-- ✅ Install dependencies (`npm install`)
-- ✅ Build the application (`npm run build`)
-- ✅ Start the server (`npm start`)
+#### **3.2 Configure Build Settings**
+Netlify will auto-detect Next.js, but verify these settings:
+```bash
+# Build settings (auto-detected):
+Build command: npm run build
+Publish directory: .next
+Node version: 18.x (or latest)
+```
 
 #### **3.3 Set Environment Variables**
-In Railway dashboard → Your project → **Variables** tab:
+In Netlify dashboard → Your site → **Site settings** → **Environment variables**:
 ```bash
 # Add these environment variables:
 NODE_ENV=production
 NEXTAUTH_SECRET=your-random-secret-key-here
-NEXTAUTH_URL=https://your-app-name.railway.app
+NEXTAUTH_URL=https://your-site-name.netlify.app
 ```
 
 **Generate NEXTAUTH_SECRET:**
@@ -289,28 +292,29 @@ NEXTAUTH_URL=https://your-app-name.railway.app
 openssl rand -base64 32
 ```
 
-### **Step 4: Add PostgreSQL Database**
+### **Step 4: Add Database (Supabase)**
 
-#### **4.1 Create Database**
-1. In your Railway project dashboard
-2. Click **"New"** → **"Database"** → **"PostgreSQL"**
-3. Railway will provision a PostgreSQL database
-4. Note the connection details (you'll need these later)
+#### **4.1 Create Supabase Project**
+1. Go to [supabase.com](https://supabase.com)
+2. Click **"Start your project"** → **"New project"**
+3. Choose your organization
+4. Project name: `intoday-db`
+5. Database password: Generate a strong password
+6. Region: Choose closest to your users
+7. Click **"Create new project"**
 
 #### **4.2 Database Connection Details**
-Railway will provide:
-- **Host**: `containers-us-west-xxx.railway.app`
-- **Port**: `5432`
-- **Database**: `railway`
-- **Username**: `postgres`
-- **Password**: `auto-generated`
-- **Connection URL**: `postgresql://postgres:password@host:port/railway`
+Supabase will provide:
+- **Project URL**: `https://your-project.supabase.co`
+- **API Key**: `eyJ...` (anon/public key)
+- **Service Role Key**: `eyJ...` (secret key)
+- **Database URL**: `postgresql://postgres:password@host:port/postgres`
 
 ### **Step 5: Configure Custom Domain (Optional)**
 
 #### **5.1 Add Custom Domain**
-1. In Railway project → **Settings** → **Domains**
-2. Click **"Custom Domain"**
+1. In Netlify dashboard → Your site → **Site settings** → **Domain management**
+2. Click **"Add custom domain"**
 3. Enter your domain (e.g., `intoday.yourdomain.com`)
 4. Follow DNS configuration instructions
 
@@ -319,16 +323,18 @@ Add these DNS records to your domain provider:
 ```
 Type: CNAME
 Name: intoday (or subdomain of choice)
-Value: your-app-name.railway.app
+Value: your-site-name.netlify.app
 ```
 
 ### **Step 6: Environment Configuration**
 
 #### **6.1 Update Environment Variables**
-Add database connection to Railway variables:
+Add database connection to Netlify variables:
 ```bash
-# Add to Railway environment variables:
-DATABASE_URL=postgresql://postgres:password@host:port/railway
+# Add to Netlify environment variables:
+DATABASE_URL=postgresql://postgres:password@host:port/postgres
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-supabase-anon-key
 NODE_ENV=production
 NEXTAUTH_SECRET=your-secret-key
 NEXTAUTH_URL=https://your-domain.com
@@ -344,22 +350,22 @@ const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3001'
 ### **Step 7: Deploy and Test**
 
 #### **7.1 Trigger Deployment**
-Railway automatically deploys when you push to GitHub:
+Netlify automatically deploys when you push to GitHub:
 ```bash
 # Make a small change and push
 git add .
-git commit -m "Configure for Railway deployment"
+git commit -m "Configure for Netlify deployment"
 git push origin main
 ```
 
 #### **7.2 Monitor Deployment**
-1. Go to Railway dashboard → Your project
-2. Click **"Deployments"** tab
+1. Go to Netlify dashboard → Your site
+2. Click **"Deploys"** tab
 3. Watch the build logs in real-time
-4. Deployment typically takes 2-5 minutes
+4. Deployment typically takes 2-3 minutes
 
 #### **7.3 Test Production Application**
-1. Visit your Railway URL: `https://your-app-name.railway.app`
+1. Visit your Netlify URL: `https://your-site-name.netlify.app`
 2. Test login functionality
 3. Test all admin features
 4. Verify database connectivity (once backend is added)
@@ -377,45 +383,47 @@ git add .
 git commit -m "Add new feature"
 git push origin main
 
-# 4. Railway automatically deploys
+# 4. Netlify automatically deploys
 # 5. Test production deployment
 ```
 
 #### **8.2 Environment Management**
 - **Local Development**: `npm run dev`
-- **Production**: Railway handles automatically
-- **Environment Variables**: Managed in Railway dashboard
-- **Database**: PostgreSQL managed by Railway
+- **Production**: Netlify handles automatically
+- **Environment Variables**: Managed in Netlify dashboard
+- **Database**: PostgreSQL managed by Supabase
 
 ### **Step 9: Monitoring and Maintenance**
 
-#### **9.1 Railway Dashboard Features**
-- **Metrics**: CPU, RAM, and bandwidth usage
-- **Logs**: Real-time application logs
+#### **9.1 Netlify Dashboard Features**
+- **Analytics**: Site traffic and performance metrics
+- **Logs**: Build and function logs
 - **Deployments**: Deployment history and rollback
-- **Settings**: Environment variables and configuration
+- **Functions**: Serverless function management
+- **Forms**: Form submission handling
 
 #### **9.2 Cost Monitoring**
-- Monitor usage in Railway dashboard
-- $5 monthly credit should last months
+- Monitor usage in Netlify dashboard
+- Free tier: 100GB bandwidth, 300 build minutes
 - Upgrade to paid plan when needed
 
 ### **Troubleshooting Common Issues**
 
 #### **Issue 1: Build Failures**
 ```bash
-# Check build logs in Railway dashboard
+# Check build logs in Netlify dashboard
 # Common fixes:
 - Update package.json dependencies
 - Check for TypeScript errors
 - Verify environment variables
+- Check Node.js version compatibility
 ```
 
 #### **Issue 2: Database Connection Issues**
 ```bash
-# Verify DATABASE_URL in Railway variables
-# Check PostgreSQL service status
-# Ensure database is provisioned
+# Verify DATABASE_URL in Netlify variables
+# Check Supabase project status
+# Ensure database is accessible from Netlify
 ```
 
 #### **Issue 3: Authentication Issues**
@@ -423,6 +431,7 @@ git push origin main
 # Verify NEXTAUTH_URL matches your domain
 # Check NEXTAUTH_SECRET is set
 # Ensure cookies are working in production
+# Check SameSite cookie settings for HTTPS
 ```
 
 ### **Next Steps After Deployment**
@@ -436,4 +445,4 @@ git push origin main
 
 ---
 
-**Next Priority:** Backend development with Node.js and database implementation
+**Next Priority:** Backend development with Node.js and Supabase database implementation
