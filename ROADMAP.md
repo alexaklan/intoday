@@ -1,23 +1,33 @@
 # intoday - Development Roadmap
 
-## ✅ Completed Features
+## 🎯 **Current Status**
+**Frontend application is complete and deployed to production at [https://intodayapp.netlify.app/](https://intodayapp.netlify.app/)**
 
-### Core Functionality
+**Database is set up with Supabase and ready for integration**
+
+---
+
+## ✅ **PHASE 1: COMPLETED - Frontend & Deployment**
+
+### 🏗️ **Core Infrastructure**
 - [x] Next.js 15 setup with TypeScript and App Router
 - [x] Tailwind CSS + shadcn/ui component library
 - [x] GSAP animations integration
 - [x] Responsive design (mobile, tablet, desktop)
 - [x] Custom intoday logo with Manrope font and toggle icon design
+- [x] Production deployment to Netlify
+- [x] GitHub repository setup and CI/CD
 
-### Authentication & Security
+### 🔐 **Authentication System**
 - [x] Complete authentication system with business rules
 - [x] Protected routes with role-based access control
 - [x] Session management with cookies
 - [x] Role-based permissions enforcement (staff, org_admin, app_admin)
 - [x] Login page with shadcn/ui design
 - [x] AuthProvider context for state management
+- [x] Production authentication with NEXTAUTH_SECRET
 
-### User Features
+### 👥 **User Features**
 - [x] Weekly schedule view (Monday-Friday)
 - [x] Office/Home day selection toggle
 - [x] Week navigation (previous/next/current week)
@@ -31,7 +41,7 @@
 - [x] Account settings page (profile, password, notifications)
 - [x] User dropdown menu in navbar
 
-### Organisation Admin Features
+### 🏢 **Organisation Admin Features**
 - [x] Organisation admin panel with tab-based navigation
 - [x] Team management interface
 - [x] Create team functionality with inline form
@@ -43,7 +53,7 @@
 - [x] Monthly calendar view for admin
 - [x] Team member cards with current day highlighting
 
-### Super Admin Features
+### ⚡ **Super Admin Features**
 - [x] Complete super admin panel with application-level management
 - [x] Overview dashboard with system statistics
 - [x] Organisation management with professional table layout
@@ -55,7 +65,16 @@
 - [x] Role-based navigation (Schedule/Super Admin switcher)
 - [x] Sub-navigation for super admin sections
 
-### Data & Structure
+### 🗄️ **Database Setup**
+- [x] Supabase project creation and configuration
+- [x] Database schema design (PostgreSQL)
+- [x] Tables: organisations, users, teams, user_teams, schedules
+- [x] Row Level Security (RLS) policies
+- [x] Database indexes for performance
+- [x] Sample data insertion
+- [x] Database connection testing
+
+### 📊 **Data & Structure**
 - [x] TypeScript type definitions
 - [x] Mock data implementation
 - [x] Multi-team user support
@@ -63,7 +82,7 @@
 - [x] Role-based access (staff, org_admin, app_admin)
 - [x] User, Team, and Organisation data models
 
-### UI/UX Improvements
+### 🎨 **UI/UX Design**
 - [x] Professional table layouts for data display
 - [x] Clean inline forms for team and user creation
 - [x] Improved navigation with role-specific menus
@@ -71,34 +90,54 @@
 - [x] Consistent design language throughout
 - [x] Responsive table designs with proper truncation
 
-## 📋 TODO / Upcoming Features
+---
 
-### Authentication & Security
-- [ ] Clerk authentication integration
-- [ ] Secure API endpoints
+## 🔄 **PHASE 2: IN PROGRESS - Database Integration**
+
+### 🗄️ **Database Connection**
+- [x] Supabase client setup and configuration
+- [x] Environment variables configuration
+- [ ] **Connect authentication to real database** (replace mock data)
+- [ ] **Connect user management to database**
+- [ ] **Connect team management to database**
+- [ ] **Connect schedule management to database**
+
+### 🔐 **Authentication Enhancement**
+- [ ] **Real password hashing and verification**
+- [ ] **Database-backed user sessions**
+- [ ] **Secure API endpoints for auth operations**
 - [ ] Password reset functionality
 - [ ] Email verification
 - [ ] Two-factor authentication
 
-### Backend Development
-- [ ] Node.js backend setup
-- [ ] Database schema design (PostgreSQL/MongoDB)
-- [ ] REST API or GraphQL implementation
-- [ ] Schedule CRUD operations
-- [ ] User management APIs
-- [ ] Team management APIs
-- [ ] Organisation management APIs
-- [ ] Subdomain management system
+### 📡 **API Development**
+- [ ] **Schedule CRUD operations API**
+- [ ] **User management APIs**
+- [ ] **Team management APIs**
+- [ ] **Organisation management APIs**
+- [ ] **Real-time schedule updates**
+- [ ] **Data validation and error handling**
 
-### Data Persistence
-- [ ] Connect frontend to backend APIs
+---
+
+## 📋 **PHASE 3: PENDING - Enhanced Features**
+
+### 🔧 **Backend Development**
+- [ ] REST API implementation
+- [ ] GraphQL implementation (optional)
+- [ ] Subdomain management system
+- [ ] File upload handling
+- [ ] Background job processing
+
+### 📊 **Data Management**
 - [ ] Real-time schedule updates
 - [ ] Data validation
 - [ ] Error handling
 - [ ] Loading states
 - [ ] Optimistic UI updates
+- [ ] Data backup and recovery
 
-### Enhanced Features
+### 🚀 **Enhanced Features**
 - [ ] Export schedules (PDF, CSV, iCal)
 - [ ] Email notifications for schedule changes
 - [ ] Weekly digest emails
@@ -108,7 +147,7 @@
 - [ ] Bulk schedule updates
 - [ ] User details modal/page for super admin
 
-### Analytics & Reporting
+### 📈 **Analytics & Reporting**
 - [ ] Detailed attendance analytics
 - [ ] Team presence trends
 - [ ] Office utilization reports
@@ -116,7 +155,7 @@
 - [ ] Export analytics data
 - [ ] Visualizations (charts, graphs)
 
-### Admin Enhancements
+### 🛠️ **Admin Enhancements**
 - [ ] Create/edit/delete organisations (super admin)
 - [ ] Create/edit/delete teams (organisation admin)
 - [ ] Invite users to organisation
@@ -126,14 +165,18 @@
 - [ ] System settings configuration
 - [ ] Organisation settings management
 
-### Subscription & Billing
+---
+
+## 📋 **PHASE 4: FUTURE - Advanced Features**
+
+### 💰 **Subscription & Billing**
 - [ ] Subscription plan management
 - [ ] Billing dashboard
 - [ ] Payment processing integration
 - [ ] Usage tracking
 - [ ] Plan upgrade/downgrade flows
 
-### UX Improvements
+### 🎨 **UX Improvements**
 - [ ] Dark mode support
 - [ ] Keyboard shortcuts
 - [ ] Advanced search/filter functionality
@@ -143,14 +186,14 @@
 - [ ] Tooltips and hints
 - [ ] Drag-and-drop scheduling
 
-### Performance & Optimization
+### ⚡ **Performance & Optimization**
 - [ ] Image optimization
 - [ ] Code splitting
 - [ ] Lazy loading
 - [ ] Caching strategy
 - [ ] Performance monitoring
 
-### Testing & Quality
+### 🧪 **Testing & Quality**
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] E2E tests
@@ -158,52 +201,57 @@
 - [ ] Performance testing
 - [ ] Security audit
 
-### DevOps & Deployment
-- [ ] CI/CD pipeline
-- [ ] Production deployment
+### 🔧 **DevOps & Deployment**
+- [ ] Advanced CI/CD pipeline
 - [ ] Environment configuration
 - [ ] Monitoring and logging
 - [ ] Backup strategy
 - [ ] SSL certificates
 - [ ] Subdomain routing setup
 
-### Mobile
+### 📱 **Mobile**
 - [ ] Progressive Web App (PWA)
 - [ ] Mobile-specific optimizations
 - [ ] Native mobile app (optional)
 
-### Integrations
+### 🔗 **Integrations**
 - [ ] Microsoft Teams integration
 - [ ] Slack integration
 - [ ] Google Calendar sync
 - [ ] Outlook Calendar sync
 - [ ] SSO providers
 
-## 🐛 Known Issues
+---
 
-- [ ] None currently
+## 🎯 **IMMEDIATE NEXT STEPS**
 
-## 💡 Future Considerations
+### **Priority 1: Database Integration (Current Focus)**
+1. **Connect authentication to real database** - Replace mock auth with Supabase
+2. **Connect user management** - Real CRUD operations for users
+3. **Connect team management** - Real CRUD operations for teams
+4. **Connect schedule management** - Real CRUD operations for schedules
 
-- [ ] Multi-language support (i18n)
-- [ ] Time zone support
-- [ ] Custom branding per organisation
-- [ ] API for third-party integrations
-- [ ] Webhooks
-- [ ] Advanced permission system
-- [ ] Department/location hierarchies
-- [ ] Real-time notifications
-- [ ] Mobile app development
+### **Priority 2: API Development**
+1. **Create API routes** for all CRUD operations
+2. **Implement real-time updates** for schedule changes
+3. **Add proper error handling** and validation
+4. **Test all functionality** with real database
+
+### **Priority 3: Enhanced Features**
+1. **Export functionality** for schedules
+2. **Email notifications** for schedule changes
+3. **Advanced admin features** for super admin
+4. **Performance optimization**
 
 ---
 
-## Notes
+## 📝 **Notes**
 
-This roadmap is a living document. Features can be added, removed, or reprioritized based on user feedback and business requirements.
+This roadmap is a living document. Features are organized by development phases and can be reprioritized based on user feedback and business requirements.
 
-**Current Status:** Frontend application is feature-complete with authentication, user management, organisation management, and super admin functionality. Ready for backend development and data persistence.
+**Current Focus:** Phase 2 - Database Integration and API Development
 
-**Next Priority:** Deploy to Netlify for production hosting and backend development
+**Production URL:** [https://intodayapp.netlify.app/](https://intodayapp.netlify.app/)
 
 ---
 
@@ -283,7 +331,7 @@ In Netlify dashboard → Your site → **Site settings** → **Environment varia
 # Add these environment variables:
 NODE_ENV=production
 NEXTAUTH_SECRET=your-random-secret-key-here
-NEXTAUTH_URL=https://your-site-name.netlify.app
+NEXTAUTH_URL=https://intodayapp.netlify.app/
 ```
 
 **Generate NEXTAUTH_SECRET:**
@@ -305,10 +353,10 @@ openssl rand -base64 32
 
 #### **4.2 Database Connection Details**
 Supabase will provide:
-- **Project URL**: `https://your-project.supabase.co`
-- **API Key**: `eyJ...` (anon/public key)
-- **Service Role Key**: `eyJ...` (secret key)
-- **Database URL**: `postgresql://postgres:password@host:port/postgres`
+- **Project URL**: `https://xhwafzvkgcfnzlumaupa.supabase.co`
+- **API Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhod2FmenZrZ2NmbnpsdW1hdXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1ODI4MjAsImV4cCI6MjA3NjE1ODgyMH0.EfU1EzMhcmZfZvLxMQXWo4lVRzCXuOEjdWEu4rNZlMo` (anon/public key)
+- **Service Role Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhod2FmenZrZ2NmbnpsdW1hdXBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDU4MjgyMCwiZXhwIjoyMDc2MTU4ODIwfQ.UatT-QpP_3ypvcIHkbmsu0M-8v7zlHa3sQqtEquS7mU` (secret key)
+- **Database URL**: `postgresql://postgres:HP}'k6[zH14dn62`Ft!Z£7@host:port/postgres`
 
 ### **Step 5: Configure Custom Domain (Optional)**
 
