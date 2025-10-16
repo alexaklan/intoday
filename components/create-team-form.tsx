@@ -265,7 +265,7 @@ export function CreateTeamForm({
           className="flex items-center gap-2"
         >
           <Save className="h-4 w-4" />
-          Create Team
+          Save Team
         </Button>
       </div>
     </div>
