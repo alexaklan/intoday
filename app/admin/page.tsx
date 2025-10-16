@@ -284,6 +284,7 @@ export default function AdminPage() {
                         date={date}
                         location={userSchedules[user.id]?.[index]?.location || 'office'}
                         isEditable={true}
+                        userId={user.id}
                         onLocationChange={(date, location) => handleLocationChange(user.id, index, location)}
                       />
                     ))}

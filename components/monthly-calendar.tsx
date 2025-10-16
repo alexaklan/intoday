@@ -24,6 +24,7 @@ interface MonthlyCalendarProps {
   onMonthChange: (date: Date) => void;
   schedule: DaySchedule[];
   isEditable?: boolean;
+  userId?: string;
   onLocationChange?: (date: Date, location: WorkLocation) => void;
 }
 
@@ -32,7 +33,8 @@ export function MonthlyCalendar({
   onMonthChange, 
   schedule,
   isEditable = false,
-  onLocationChange
+  userId,
+  onLocationChange 
 }: MonthlyCalendarProps) {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -64,12 +66,37 @@ export function MonthlyCalendar({
     return daySchedule?.location || null;
   };
   
-  const handleDayClick = (date: Date) => {
+  const handleDayClick = async (date: Date) => {
     if (!isEditable || !onLocationChange || !isSameMonth(date, currentMonth)) return;
     
     const currentLocation = getLocationForDate(date);
     const newLocation: WorkLocation = currentLocation === 'office' ? 'home' : 'office';
+    
+    // Call the parent callback first for immediate UI update
     onLocationChange(date, newLocation);
+    
+    // Save to database if userId is provided
+    if (userId) {
+      try {
+        const response = await fetch('/api/schedules', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            date: date.toISOString().split('T')[0], // YYYY-MM-DD format
+            location: newLocation,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to save schedule to database');
+        }
+      } catch (error) {
+        console.error('Error saving schedule:', error);
+      }
+    }
   };
   
   const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];

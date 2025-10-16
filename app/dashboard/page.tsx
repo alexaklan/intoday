@@ -169,6 +169,7 @@ export default function Dashboard() {
                     date={date}
                     location={getLocationForDate(date)}
                     isEditable={true}
+                    userId={user?.id}
                     onLocationChange={handleLocationChange}
                   />
                 ))}
@@ -180,6 +181,7 @@ export default function Dashboard() {
               onMonthChange={setCurrentMonth}
               schedule={userSchedule}
               isEditable={true}
+              userId={user?.id}
               onLocationChange={handleLocationChange}
             />
           )}
