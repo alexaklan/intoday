@@ -293,9 +293,11 @@ export default function AdminPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">Teams</h2>
-              <Button onClick={() => setIsCreatingTeam(true)}>
-                Create Team
-              </Button>
+              {!isCreatingTeam && (
+                <Button onClick={() => setIsCreatingTeam(true)}>
+                  Create Team
+                </Button>
+              )}
             </div>
 
             {isCreatingTeam ? (
@@ -332,9 +334,11 @@ export default function AdminPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">Users</h2>
-              <Button onClick={() => setIsAddingUser(true)}>
-                Add User
-              </Button>
+              {!isAddingUser && (
+                <Button onClick={() => setIsAddingUser(true)}>
+                  Add User
+                </Button>
+              )}
             </div>
 
             {isAddingUser ? (
