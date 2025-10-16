@@ -10,8 +10,8 @@ import { ProtectedRoute } from '@/components/protected-route';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { teams, getUsersByTeam, getTeamById, getUserSchedulesForWeek } from '@/lib/database-service';
-import { WorkLocation, DaySchedule } from '@/lib/types';
+import { getUserSchedulesForWeek, getTeamsByOrganisation, getUsersByOrganisation, User as DatabaseUser } from '@/lib/database-service';
+import { WorkLocation, DaySchedule, Team as ComponentTeam, User as ComponentUser } from '@/lib/types';
 import { startOfWeek, addDays, format, isSameWeek } from 'date-fns';
 import { Calendar, CalendarDays, Grid3X3, List } from 'lucide-react';
 import { useAuth } from '@/components/auth-provider';
@@ -25,6 +25,8 @@ export default function Dashboard() {
   const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const [userSchedule, setUserSchedule] = useState<DaySchedule[]>([]);
   const [selectedTeamId, setSelectedTeamId] = useState<string>('');
+  const [teams, setTeams] = useState<ComponentTeam[]>([]);
+  const [teamMembers, setTeamMembers] = useState<ComponentUser[]>([]);
 
   // Load user schedules from database
   const loadUserSchedules = async () => {
@@ -42,10 +44,54 @@ export default function Dashboard() {
     }
   };
 
+  // Load teams for the user's organisation
+  const loadTeams = async () => {
+    if (!user) return;
+    
+    try {
+      const userTeams = await getTeamsByOrganisation(user.organisationId);
+      // Convert database teams to component teams
+      const componentTeams: ComponentTeam[] = userTeams.map(team => ({
+        id: team.id,
+        name: team.name,
+        organisationId: team.organisationId,
+        memberIds: [] // We'll populate this separately if needed
+      }));
+      setTeams(componentTeams);
+    } catch (error) {
+      console.error('Error loading teams:', error);
+    }
+  };
+
+  // Load team members for selected team
+  const loadTeamMembers = async () => {
+    if (!selectedTeamId || !user) return;
+    
+    try {
+      const allUsers = await getUsersByOrganisation(user.organisationId);
+      // Filter users who belong to the selected team
+      const members = allUsers.filter(u => u.teamIds?.includes(selectedTeamId));
+      // Convert database users to component users
+      const componentUsers: ComponentUser[] = members.map(member => ({
+        id: member.id,
+        name: member.name,
+        email: member.email,
+        role: member.role,
+        organisationId: member.organisationId,
+        teamIds: member.teamIds || [],
+        schedule: [] // We'll load this separately if needed
+      }));
+      setTeamMembers(componentUsers);
+    } catch (error) {
+      console.error('Error loading team members:', error);
+    }
+  };
+
   // Initialize user data when user is available
   useEffect(() => {
     if (user) {
       loadUserSchedules();
+      loadTeams();
       
       // Set default team if user has teams
       if (user.teamIds.length > 0 && !selectedTeamId) {
@@ -53,6 +99,11 @@ export default function Dashboard() {
       }
     }
   }, [user, currentWeek]);
+
+  // Load team members when selected team changes
+  useEffect(() => {
+    loadTeamMembers();
+  }, [selectedTeamId]);
   
   const weekDatesRef = useRef<HTMLDivElement>(null);
   const teamMembersRef = useRef<HTMLDivElement>(null);
@@ -60,8 +111,7 @@ export default function Dashboard() {
   const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
   const weekDates = Array.from({ length: 5 }, (_, i) => addDays(weekStart, i));
   
-  const selectedTeam = getTeamById(selectedTeamId);
-  const teamMembers = selectedTeam ? getUsersByTeam(selectedTeamId) : [];
+  const selectedTeam = teams.find(t => t.id === selectedTeamId);
   
   useEffect(() => {
     if (weekDatesRef.current) {
