@@ -180,21 +180,26 @@ export async function getUserSchedulesForWeek(userId: string, weekStart: Date): 
 export async function updateUserSchedule(userId: string, date: Date, location: 'office' | 'home'): Promise<boolean> {
   try {
     const dateString = date.toISOString().split('T')[0];
+    console.log('updateUserSchedule called with:', { userId, dateString, location });
 
-    const { error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('schedules')
       .upsert({
         user_id: userId,
         date: dateString,
         location: location,
         updated_at: new Date().toISOString(),
-      });
+      })
+      .select();
+
+    console.log('Supabase upsert result:', { data, error });
 
     if (error) {
       console.error('Supabase error updating schedule:', error);
       return false;
     }
 
+    console.log('Schedule updated successfully:', data);
     return true;
   } catch (error) {
     console.error('Error in updateUserSchedule:', error);
