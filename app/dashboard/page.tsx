@@ -34,7 +34,9 @@ export default function Dashboard() {
     
     try {
       const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
+      console.log('Loading schedules for user:', user.id, 'week:', weekStart.toISOString().split('T')[0]);
       const schedules = await getUserSchedulesForWeek(user.id, weekStart);
+      console.log('Loaded schedules from database:', schedules);
       setUserSchedule(schedules.map(schedule => ({
         date: format(schedule.date, 'yyyy-MM-dd'),
         location: schedule.location
