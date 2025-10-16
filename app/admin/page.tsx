@@ -334,8 +334,14 @@ export default function AdminPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">Users</h2>
+              {console.log('Rendering users tab, isAddingUser:', isAddingUser)}
               {!isAddingUser && (
-                <Button onClick={() => setIsAddingUser(true)}>
+                <Button onClick={() => {
+                  console.log('Header Add User button clicked');
+                  console.log('Current isAddingUser state:', isAddingUser);
+                  setIsAddingUser(true);
+                  console.log('Set isAddingUser to true');
+                }}>
                   Add User
                 </Button>
               )}
