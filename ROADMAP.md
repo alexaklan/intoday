@@ -354,9 +354,11 @@ openssl rand -base64 32
 #### **4.2 Database Connection Details**
 Supabase will provide:
 - **Project URL**: `https://xhwafzvkgcfnzlumaupa.supabase.co`
-- **API Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhod2FmenZrZ2NmbnpsdW1hdXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA1ODI4MjAsImV4cCI6MjA3NjE1ODgyMH0.EfU1EzMhcmZfZvLxMQXWo4lVRzCXuOEjdWEu4rNZlMo` (anon/public key)
-- **Service Role Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhod2FmenZrZ2NmbnpsdW1hdXBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDU4MjgyMCwiZXhwIjoyMDc2MTU4ODIwfQ.UatT-QpP_3ypvcIHkbmsu0M-8v7zlHa3sQqtEquS7mU` (secret key)
-- **Database URL**: `postgresql://postgres:HP}'k6[zH14dn62`Ft!Z£7@host:port/postgres`
+- **API Key (anon/public)**: Set in Netlify environment variables (NOT in code)
+- **Service Role Key**: Set in Netlify environment variables (NOT in code) 
+- **Database URL**: Set in Netlify environment variables (NOT in code)
+
+**⚠️ SECURITY NOTE**: Never commit API keys to Git. Always use environment variables.
 
 ### **Step 5: Configure Custom Domain (Optional)**
 
