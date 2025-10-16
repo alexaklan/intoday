@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 
 interface CreateTeamFormProps {
   onCancel: () => void;
-  onSave: (teamName: string, selectedUserIds: string[]) => void;
+  onSave: (teamName: string, selectedUserIds: string[]) => Promise<void>;
   users: User[];
   existingTeams: Team[];
   organisationId: string;
@@ -67,7 +67,7 @@ export function CreateTeamForm({
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     console.log('CreateTeamForm handleSave called', {
       teamName: teamName.trim(),
       selectedUserIds,
@@ -78,7 +78,12 @@ export function CreateTeamForm({
     
     if (errors.length === 0 && teamName.trim()) {
       console.log('Calling onSave with:', teamName.trim(), selectedUserIds);
-      onSave(teamName.trim(), selectedUserIds);
+      try {
+        await onSave(teamName.trim(), selectedUserIds);
+        console.log('onSave completed successfully');
+      } catch (error) {
+        console.error('onSave failed:', error);
+      }
     } else {
       console.log('Save blocked due to validation:', {
         hasErrors: errors.length > 0,
