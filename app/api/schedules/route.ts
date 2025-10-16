@@ -35,13 +35,13 @@ export async function GET(request: NextRequest) {
 // POST /api/schedules - Update a user's schedule
 export async function POST(request: NextRequest) {
   try {
-    // Temporarily bypass auth for debugging
-    console.log('Schedule POST called');
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     
     const body = await request.json();
     const { userId, date, location } = body;
-
-    console.log('Request body:', { userId, date, location });
 
     // Validate required fields
     if (!userId || !date || !location) {
@@ -53,7 +53,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid location' }, { status: 400 });
     }
 
-    console.log('Updating schedule:', { userId, date, location });
+    // Check permissions: users can only edit their own schedules, admins can edit any
+    if (user.role === 'staff' && userId !== user.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
 
     const success = await updateUserSchedule(userId, new Date(date), location);
 

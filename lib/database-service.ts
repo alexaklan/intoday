@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, supabaseAdmin } from './supabase';
 // Remove unused import
 
 export interface User {
@@ -180,9 +180,8 @@ export async function getUserSchedulesForWeek(userId: string, weekStart: Date): 
 export async function updateUserSchedule(userId: string, date: Date, location: 'office' | 'home'): Promise<boolean> {
   try {
     const dateString = date.toISOString().split('T')[0];
-    console.log('updateUserSchedule called with:', { userId, dateString, location });
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('schedules')
       .upsert({
         user_id: userId,
@@ -196,7 +195,6 @@ export async function updateUserSchedule(userId: string, date: Date, location: '
       return false;
     }
 
-    console.log('Schedule updated successfully');
     return true;
   } catch (error) {
     console.error('Error in updateUserSchedule:', error);
@@ -208,7 +206,7 @@ export async function updateUserSchedule(userId: string, date: Date, location: '
 export async function createTeam(name: string, organisationId: string, userIds: string[]): Promise<string | null> {
   try {
     // Create the team
-    const { data: team, error: teamError } = await supabase
+    const { data: team, error: teamError } = await supabaseAdmin
       .from('teams')
       .insert({
         name,
@@ -229,7 +227,7 @@ export async function createTeam(name: string, organisationId: string, userIds: 
         team_id: team.id,
       }));
 
-      const { error: userTeamError } = await supabase
+      const { error: userTeamError } = await supabaseAdmin
         .from('user_teams')
         .insert(userTeamInserts);
 
@@ -256,7 +254,7 @@ export async function createUser(
 ): Promise<string | null> {
   try {
     // Create the user
-    const { data: user, error: userError } = await supabase
+    const { data: user, error: userError } = await supabaseAdmin
       .from('users')
       .insert({
         name,
@@ -280,7 +278,7 @@ export async function createUser(
         team_id: teamId,
       }));
 
-      const { error: userTeamError } = await supabase
+      const { error: userTeamError } = await supabaseAdmin
         .from('user_teams')
         .insert(userTeamInserts);
 
