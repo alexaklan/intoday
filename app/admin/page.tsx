@@ -50,6 +50,11 @@ export default function AdminPage() {
   const [isCreatingTeam, setIsCreatingTeam] = useState(false);
   const [isAddingUser, setIsAddingUser] = useState(false);
 
+  // Debug isAddingUser state changes
+  useEffect(() => {
+    console.log('isAddingUser state changed to:', isAddingUser);
+  }, [isAddingUser]);
+
   // Fetch data from API
   useEffect(() => {
     const fetchData = async () => {
@@ -334,7 +339,6 @@ export default function AdminPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">Users</h2>
-              {console.log('Rendering users tab, isAddingUser:', isAddingUser)}
               {!isAddingUser && (
                 <Button onClick={() => {
                   console.log('Header Add User button clicked');
