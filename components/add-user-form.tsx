@@ -291,7 +291,7 @@ export function AddUserForm({
         </Button>
         <Button 
           onClick={handleSave}
-          disabled={errors.length > 0 || !firstName.trim() || !lastName.trim() || !email.trim() || selectedTeamIds.length === 0}
+          disabled={errors.length > 0 || !firstName.trim() || !lastName.trim() || !email.trim()}
           className="flex items-center gap-2"
         >
           <Save className="h-4 w-4" />

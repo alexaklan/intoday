@@ -54,9 +54,7 @@ export function CreateTeamForm({
       newErrors.push('A team with this name already exists');
     }
     
-    if (selectedUserIds.length === 0) {
-      newErrors.push('At least one team member is required');
-    }
+    // Allow teams without members - they can be added later
     
     setErrors(newErrors);
   }, [teamName, isDuplicateName, selectedUserIds]);
