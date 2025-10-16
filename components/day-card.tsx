@@ -11,17 +11,47 @@ interface DayCardProps {
   date: Date;
   location: WorkLocation;
   isEditable: boolean;
+  userId?: string;
   onLocationChange?: (date: Date, location: WorkLocation) => void;
 }
 
-export function DayCard({ date, location, isEditable, onLocationChange }: DayCardProps) {
+export function DayCard({ date, location, isEditable, userId, onLocationChange }: DayCardProps) {
   const isDateToday = isToday(date);
   const isDatePast = isPast(date) && !isDateToday;
   
-  const handleToggle = () => {
-    if (!isEditable || !onLocationChange) return;
+  const handleToggle = async () => {
+    if (!isEditable) return;
+    
     const newLocation: WorkLocation = location === 'office' ? 'home' : 'office';
-    onLocationChange(date, newLocation);
+    
+    // Call the parent callback first for immediate UI update
+    if (onLocationChange) {
+      onLocationChange(date, newLocation);
+    }
+    
+    // Save to database if userId is provided
+    if (userId) {
+      try {
+        const response = await fetch('/api/schedules', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId,
+            date: date.toISOString().split('T')[0], // YYYY-MM-DD format
+            location: newLocation,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to save schedule to database');
+          // Optionally revert the UI change here
+        }
+      } catch (error) {
+        console.error('Error saving schedule:', error);
+      }
+    }
   };
   
   return (
