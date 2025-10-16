@@ -13,6 +13,7 @@ import { CreateTeamForm } from '@/components/create-team-form';
 import { AddUserForm } from '@/components/add-user-form';
 import { ProtectedRoute } from '@/components/protected-route';
 import { WorkLocation, DaySchedule, User as UserType, Team as TeamType } from '@/lib/types';
+import { getUserSchedulesForWeek, getUsersByOrganisation, getTeamsByOrganisation } from '@/lib/database-service';
 import { Building, Users as UsersIcon, UserCog, Shield } from 'lucide-react';
 import { startOfWeek, addDays, format } from 'date-fns';
 import { useAuth } from '@/components/auth-provider';
@@ -87,6 +88,38 @@ export default function AdminPage() {
       fetchData();
     }
   }, [currentUser]);
+
+  // Load schedules for all users
+  const loadUserSchedules = async () => {
+    if (!currentUser || users.length === 0) return;
+    
+    try {
+      const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
+      const schedulePromises = users.map(async (user) => {
+        const schedules = await getUserSchedulesForWeek(user.id, weekStart);
+        return { userId: user.id, schedules };
+      });
+      
+      const scheduleResults = await Promise.all(schedulePromises);
+      const scheduleMap: Record<string, DaySchedule[]> = {};
+      
+      scheduleResults.forEach(({ userId, schedules }) => {
+        scheduleMap[userId] = schedules.map(schedule => ({
+          date: format(schedule.date, 'yyyy-MM-dd'),
+          location: schedule.location
+        }));
+      });
+      
+      setUserSchedules(scheduleMap);
+    } catch (error) {
+      console.error('Error loading user schedules:', error);
+    }
+  };
+
+  // Load schedules when users or week changes
+  useEffect(() => {
+    loadUserSchedules();
+  }, [users, currentWeek]);
 
   const handleCreateTeam = async (name: string, userIds: string[]) => {
     console.log('Admin handleCreateTeam called with:', { name, userIds });
@@ -170,13 +203,18 @@ export default function AdminPage() {
     }));
   };
 
-  const handleLocationChange = (userId: string, dayIndex: number, location: WorkLocation) => {
+  const handleLocationChange = async (userId: string, dayIndex: number, location: WorkLocation) => {
     setUserSchedules(prev => ({
       ...prev,
       [userId]: prev[userId]?.map((schedule, index) => 
         index === dayIndex ? { ...schedule, location } : schedule
       ) || []
     }));
+    
+    // Reload schedules from database to ensure consistency
+    setTimeout(() => {
+      loadUserSchedules();
+    }, 100);
   };
 
   const toggleUserExpanded = (userId: string) => {

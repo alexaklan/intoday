@@ -10,7 +10,7 @@ import { ProtectedRoute } from '@/components/protected-route';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { teams, getUsersByTeam, getTeamById } from '@/lib/mock-data';
+import { teams, getUsersByTeam, getTeamById, getUserSchedulesForWeek } from '@/lib/database-service';
 import { WorkLocation, DaySchedule } from '@/lib/types';
 import { startOfWeek, addDays, format, isSameWeek } from 'date-fns';
 import { Calendar, CalendarDays, Grid3X3, List } from 'lucide-react';
@@ -26,39 +26,33 @@ export default function Dashboard() {
   const [userSchedule, setUserSchedule] = useState<DaySchedule[]>([]);
   const [selectedTeamId, setSelectedTeamId] = useState<string>('');
 
+  // Load user schedules from database
+  const loadUserSchedules = async () => {
+    if (!user) return;
+    
+    try {
+      const weekStart = startOfWeek(currentWeek, { weekStartsOn: 1 });
+      const schedules = await getUserSchedulesForWeek(user.id, weekStart);
+      setUserSchedule(schedules.map(schedule => ({
+        date: format(schedule.date, 'yyyy-MM-dd'),
+        location: schedule.location
+      })));
+    } catch (error) {
+      console.error('Error loading user schedules:', error);
+    }
+  };
+
   // Initialize user data when user is available
   useEffect(() => {
     if (user) {
-      // In a real app, you'd fetch this from the API
-      // For now, we'll use mock data based on user ID
-      const mockSchedules: Record<string, DaySchedule[]> = {
-        'user-0': [
-          { date: '2024-01-15', location: 'office' },
-          { date: '2024-01-16', location: 'office' },
-          { date: '2024-01-17', location: 'home' },
-          { date: '2024-01-18', location: 'office' },
-          { date: '2024-01-19', location: 'home' },
-        ],
-        'user-1': [
-          { date: '2024-01-15', location: 'home' },
-          { date: '2024-01-16', location: 'office' },
-          { date: '2024-01-17', location: 'office' },
-          { date: '2024-01-18', location: 'home' },
-          { date: '2024-01-19', location: 'office' },
-        ],
-        'user-4': [
-          { date: '2024-01-15', location: 'office' },
-          { date: '2024-01-16', location: 'home' },
-          { date: '2024-01-17', location: 'office' },
-          { date: '2024-01-18', location: 'home' },
-          { date: '2024-01-19', location: 'office' },
-        ],
-      };
+      loadUserSchedules();
       
-      setUserSchedule(mockSchedules[user.id] || []);
-      setSelectedTeamId(user.teamIds[0] || '');
+      // Set default team if user has teams
+      if (user.teamIds.length > 0 && !selectedTeamId) {
+        setSelectedTeamId(user.teamIds[0]);
+      }
     }
-  }, [user]);
+  }, [user, currentWeek]);
   
   const weekDatesRef = useRef<HTMLDivElement>(null);
   const teamMembersRef = useRef<HTMLDivElement>(null);
@@ -103,7 +97,7 @@ export default function Dashboard() {
     }
   }, [selectedTeamId, teamMembers]);
   
-  const handleLocationChange = (date: Date, location: WorkLocation) => {
+  const handleLocationChange = async (date: Date, location: WorkLocation) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     setUserSchedule(prev => {
       const existing = prev.find(s => s.date === dateStr);
@@ -113,6 +107,11 @@ export default function Dashboard() {
         return [...prev, { date: dateStr, location }];
       }
     });
+    
+    // Reload schedules from database to ensure consistency
+    setTimeout(() => {
+      loadUserSchedules();
+    }, 100);
   };
   
   const getLocationForDate = (date: Date): WorkLocation => {
