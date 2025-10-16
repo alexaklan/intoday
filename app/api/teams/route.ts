@@ -24,19 +24,32 @@ export async function GET(request: NextRequest) {
 // POST /api/teams - Create a new team
 export async function POST(request: NextRequest) {
   try {
+    console.log('POST /api/teams - Starting team creation');
+    
     const user = await requireAuth();
+    console.log('POST /api/teams - User authenticated:', user.id, user.role);
     
     if (user.role !== 'org_admin' && user.role !== 'app_admin') {
+      console.log('POST /api/teams - Unauthorized role:', user.role);
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const body = await request.json();
+    console.log('POST /api/teams - Request body:', body);
+    
     const { name, userIds } = body;
 
     // Validate required fields
     if (!name) {
+      console.log('POST /api/teams - Missing team name');
       return NextResponse.json({ error: 'Team name is required' }, { status: 400 });
     }
+
+    console.log('POST /api/teams - Calling createTeam with:', {
+      name,
+      organisationId: user.organisationId,
+      userIds: userIds || []
+    });
 
     // Create team
     const teamId = await createTeam(
@@ -45,13 +58,17 @@ export async function POST(request: NextRequest) {
       userIds || []
     );
 
+    console.log('POST /api/teams - createTeam result:', teamId);
+
     if (!teamId) {
+      console.log('POST /api/teams - createTeam returned null');
       return NextResponse.json({ error: 'Failed to create team' }, { status: 500 });
     }
 
+    console.log('POST /api/teams - Team created successfully:', teamId);
     return NextResponse.json({ success: true, teamId });
   } catch (error) {
-    console.error('Error creating team:', error);
+    console.error('POST /api/teams - Error creating team:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
