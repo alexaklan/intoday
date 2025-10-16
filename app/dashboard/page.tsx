@@ -147,7 +147,7 @@ export default function Dashboard() {
     }
   }, [selectedTeamId, teamMembers]);
   
-  const handleLocationChange = async (date: Date, location: WorkLocation) => {
+  const handleLocationChange = (date: Date, location: WorkLocation) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     setUserSchedule(prev => {
       const existing = prev.find(s => s.date === dateStr);
@@ -157,17 +157,12 @@ export default function Dashboard() {
         return [...prev, { date: dateStr, location }];
       }
     });
-    
-    // Reload schedules from database to ensure consistency
-    setTimeout(() => {
-      loadUserSchedules();
-    }, 100);
   };
   
   const getLocationForDate = (date: Date): WorkLocation => {
     const dateStr = format(date, 'yyyy-MM-dd');
     const schedule = userSchedule.find(s => s.date === dateStr);
-    return schedule?.location || 'home';
+    return schedule?.location || 'office';
   };
   
   const isCurrentWeekView = isSameWeek(currentWeek, new Date(), { weekStartsOn: 1 });

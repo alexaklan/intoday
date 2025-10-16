@@ -203,18 +203,13 @@ export default function AdminPage() {
     }));
   };
 
-  const handleLocationChange = async (userId: string, dayIndex: number, location: WorkLocation) => {
+  const handleLocationChange = (userId: string, dayIndex: number, location: WorkLocation) => {
     setUserSchedules(prev => ({
       ...prev,
       [userId]: prev[userId]?.map((schedule, index) => 
         index === dayIndex ? { ...schedule, location } : schedule
       ) || []
     }));
-    
-    // Reload schedules from database to ensure consistency
-    setTimeout(() => {
-      loadUserSchedules();
-    }, 100);
   };
 
   const toggleUserExpanded = (userId: string) => {

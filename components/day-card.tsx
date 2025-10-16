@@ -32,6 +32,8 @@ export function DayCard({ date, location, isEditable, userId, onLocationChange }
     // Save to database if userId is provided
     if (userId) {
       try {
+        console.log('Saving schedule to database:', { userId, date: date.toISOString().split('T')[0], location: newLocation });
+        
         const response = await fetch('/api/schedules', {
           method: 'POST',
           headers: {
@@ -45,8 +47,11 @@ export function DayCard({ date, location, isEditable, userId, onLocationChange }
         });
 
         if (!response.ok) {
-          console.error('Failed to save schedule to database');
+          const errorData = await response.json();
+          console.error('Failed to save schedule to database:', errorData);
           // Optionally revert the UI change here
+        } else {
+          console.log('Schedule saved successfully');
         }
       } catch (error) {
         console.error('Error saving schedule:', error);
