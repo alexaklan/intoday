@@ -3,13 +3,14 @@ import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    // Test if Service Role Key is working by trying to insert a test record
+    // Test if Service Role Key is working by trying to update an existing record
     const { data, error } = await supabaseAdmin
       .from('schedules')
-      .insert({
+      .upsert({
         user_id: '550e8400-e29b-41d4-a716-446655440012', // Ethan Hunt's ID
         date: '2025-10-16',
-        location: 'office',
+        location: 'home',
+        updated_at: new Date().toISOString(),
       })
       .select();
 
@@ -24,7 +25,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      message: 'Service Role Key is working',
+      message: 'Service Role Key is working - upsert successful',
       data,
     });
   } catch (error) {
