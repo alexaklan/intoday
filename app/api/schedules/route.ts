@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserSchedulesForWeek, updateUserSchedule } from '@/lib/database-service';
-import { requireAuth } from '@/lib/auth-service';
+import { getCurrentUser } from '@/lib/auth-service';
 
 // GET /api/schedules - Fetch schedules for a user and week
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     const weekStart = searchParams.get('weekStart');
@@ -31,7 +35,12 @@ export async function GET(request: NextRequest) {
 // POST /api/schedules - Update a user's schedule
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    // Get current user without redirecting
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { userId, date, location } = body;
 
@@ -49,6 +58,8 @@ export async function POST(request: NextRequest) {
     if (user.role === 'staff' && userId !== user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
+
+    console.log('Updating schedule:', { userId, date, location, user: user.id });
 
     const success = await updateUserSchedule(userId, new Date(date), location);
 
