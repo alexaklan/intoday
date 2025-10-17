@@ -11,7 +11,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Admin client with service role key - bypasses RLS policies
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey || supabaseAnonKey)
+if (!supabaseServiceRoleKey) {
+  throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY environment variable')
+}
+
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey)
 
 // Database types (we'll define these as we create tables)
 export interface Database {
