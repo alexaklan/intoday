@@ -24,6 +24,13 @@ export function DayCard({ date, location, isEditable, userId, onLocationChange }
     
     const newLocation: WorkLocation = location === 'office' ? 'home' : 'office';
     
+    console.log('DayCard handleToggle called:', { 
+      userId, 
+      date: date.toISOString().split('T')[0], 
+      currentLocation: location, 
+      newLocation 
+    });
+    
     // Call the parent callback first for immediate UI update
     if (onLocationChange) {
       onLocationChange(date, newLocation);
@@ -32,6 +39,7 @@ export function DayCard({ date, location, isEditable, userId, onLocationChange }
     // Save to database if userId is provided
     if (userId) {
       try {
+        console.log('Making API call to save schedule...');
         const response = await fetch('/api/schedules', {
           method: 'POST',
           headers: {
@@ -44,13 +52,19 @@ export function DayCard({ date, location, isEditable, userId, onLocationChange }
           }),
         });
 
+        console.log('API response status:', response.status);
+        
         if (!response.ok) {
           const errorData = await response.json();
           console.error('Failed to save schedule:', errorData);
+        } else {
+          console.log('Schedule saved successfully!');
         }
       } catch (error) {
         console.error('Error saving schedule:', error);
       }
+    } else {
+      console.error('No userId provided to DayCard');
     }
   };
   
