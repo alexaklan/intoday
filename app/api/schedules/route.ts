@@ -69,7 +69,11 @@ export async function POST(request: NextRequest) {
     console.log('updateUserSchedule result:', success);
 
     if (!success) {
-      return NextResponse.json({ error: 'Failed to update schedule' }, { status: 500 });
+      console.error('updateUserSchedule returned false - check database logs');
+      return NextResponse.json({ 
+        error: 'Failed to update schedule',
+        details: 'updateUserSchedule returned false'
+      }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });
