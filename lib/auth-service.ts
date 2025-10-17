@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { supabase } from './supabase';
+import { supabase, supabaseAdmin } from './supabase';
 import bcrypt from 'bcryptjs';
 
 export interface AuthUser {
@@ -18,7 +18,7 @@ export interface AuthUser {
 export async function login(email: string, password: string): Promise<boolean> {
   try {
     // Find user in database
-    const { data: user, error } = await supabase
+    const { data: user, error } = await supabaseAdmin
       .from('users')
       .select('*')
       .eq('email', email)
@@ -62,7 +62,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     }
 
     // Fetch user from database with organisation and teams
-    const { data: user, error } = await supabase
+    const { data: user, error } = await supabaseAdmin
       .from('users')
       .select(`
         id,
