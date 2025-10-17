@@ -154,7 +154,7 @@ export async function getUserSchedulesForWeek(userId: string, weekStart: Date): 
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
 
-    const { data: schedules, error } = await supabase
+    const { data: schedules, error } = await supabaseAdmin
       .from('schedules')
       .select('date, location')
       .eq('user_id', userId)
