@@ -182,9 +182,30 @@ export async function updateUserSchedule(userId: string, date: Date, location: '
     const dateString = date.toISOString().split('T')[0];
     console.log('updateUserSchedule called with:', { userId, dateString, location });
 
-    const { data, error } = await supabaseAdmin
+    // First try to update existing record
+    const { data: updateData, error: updateError } = await supabaseAdmin
       .from('schedules')
-      .upsert({
+      .update({ 
+        location: location,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('user_id', userId)
+      .eq('date', dateString)
+      .select();
+
+    console.log('Update result:', { updateData, updateError });
+
+    // If update succeeded, return true
+    if (!updateError && updateData && updateData.length > 0) {
+      console.log('Schedule updated successfully:', updateData);
+      return true;
+    }
+
+    // If no record exists, create a new one
+    console.log('No existing record found, creating new one...');
+    const { data: insertData, error: insertError } = await supabaseAdmin
+      .from('schedules')
+      .insert({
         user_id: userId,
         date: dateString,
         location: location,
@@ -192,14 +213,14 @@ export async function updateUserSchedule(userId: string, date: Date, location: '
       })
       .select();
 
-    console.log('Supabase upsert result:', { data, error });
+    console.log('Insert result:', { insertData, insertError });
 
-    if (error) {
-      console.error('Supabase error updating schedule:', error);
+    if (insertError) {
+      console.error('Supabase error inserting schedule:', insertError);
       return false;
     }
 
-    console.log('Schedule updated successfully:', data);
+    console.log('Schedule created successfully:', insertData);
     return true;
   } catch (error) {
     console.error('Error in updateUserSchedule:', error);
